@@ -60,10 +60,8 @@ public class AvoidStarImportCheckTest
         final DefaultConfiguration checkConfig =
             createModuleConfig(AvoidStarImportCheck.class);
         checkConfig.addAttribute("excludes",
-            "java.io,java.lang,javax.swing.WindowConstants.*, javax.swing.WindowConstants");
-        // allow the java.io/java.lang,javax.swing.WindowConstants star imports
+            "java.io,java.lang,javax.swing.WindowConstants.*,com.puppycrawl.tools.checkstyle.checks.imports");
         final String[] expected2 = {
-            "7: " + getCheckMessage(MSG_KEY, "com.puppycrawl.tools.checkstyle.checks.imports.*"),
             "28: " + getCheckMessage(MSG_KEY, "java.io.File.*"),
         };
         verify(checkConfig, getPath("InputAvoidStarImportDefault.java"),

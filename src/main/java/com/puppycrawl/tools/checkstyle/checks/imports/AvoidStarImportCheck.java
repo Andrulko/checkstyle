@@ -145,8 +145,8 @@ public class AvoidStarImportCheck
             final DetailAST startingDot = ast.getFirstChild();
             logsStarredImportViolation(startingDot);
         }
-        else if (!allowStaticMemberImports
-            && ast.getType() == TokenTypes.STATIC_IMPORT) {
+//        TODO: only 2 types of token required, so there is no need for check
+        else if (!allowStaticMemberImports) {
             // must navigate past the static keyword
             final DetailAST startingDot = ast.getFirstChild().getNextSibling();
             logsStarredImportViolation(startingDot);

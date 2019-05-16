@@ -71,7 +71,7 @@ public class AvoidStaticImportCheckTest
             throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(AvoidStaticImportCheck.class);
-        checkConfig.addAttribute("excludes", "java.io.File.*,sun.net.ftpclient.FtpClient.*");
+        checkConfig.addAttribute("excludes", "java.io.File.listRoots,java.io.File.createTempFile,java.io.File.pathSeparator,sun.net.ftpclient.FtpClient.*");
         // allow the "java.io.File.*" AND "sun.net.ftpclient.FtpClient.*" star imports
         final String[] expected = {
             "25: " + getCheckMessage(MSG_KEY, "javax.swing.WindowConstants.*"),
