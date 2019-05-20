@@ -1292,6 +1292,7 @@ uniqueproperties
 Unitless
 unlzma
 unnecessaryparentheses
+unnecessarysemicolonaftertypememberdeclaration
 unnecessarysemicoloninenumeration
 unnecessarysemicolonintrywithresources
 Unproxyable

@@ -4953,6 +4953,73 @@ if (&quot;something&quot;.equals(x))
       </subsection>
     </section>
 
+    <section name="UnnecessarySemicolonAfterTypeMemberDeclaration">
+      <p>Since Checkstyle 8.23</p>
+      <subsection name="Description"
+                  id="UnnecessarySemicolonAfterTypeMemberDeclaration_Description">
+        <p>
+          Checks if unnecessary semicolon is used after code type member declaration.
+          The check will flag the following with warnings:
+        </p>
+        <source>
+class A {
+    ; // standalone semicolon
+    {}; // semicolon after init block
+    static {}; // semicolon after static init block
+    A(){}; // semicolon after constructor definition
+    void method() {}; // semicolon after method definition
+    int field = 10;; // semicolon after field declaration
+}
+        </source>
+      </subsection>
+
+      <subsection name="Examples" id="UnnecessarySemicolonAfterTypeMemberDeclaration_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;UnnecessarySemicolonAfterTypeMemberDeclaration&quot;/&gt;
+        </source>
+      </subsection>
+
+      <subsection name="Example of Usage"
+                  id="UnnecessarySemicolonAfterTypeMemberDeclaration_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+UnnecessarySemicolonAfterTypeMemberDeclaration">
+              Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Error Messages"
+                  id="UnnecessarySemicolonAfterTypeMemberDeclaration_Error_Messages">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22unnecessary.semicolon%22">
+                unnecessary.semicolon</a>
+          </li>
+        </ul>
+        <p>
+          All messages can be customized if the default message doesn't suit you.
+          Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
+        </p>
+      </subsection>
+
+      <subsection name="Package" id="UnnecessarySemicolonAfterTypeMemberDeclaration_Package">
+        <p>
+          com.puppycrawl.tools.checkstyle.checks.coding
+        </p>
+      </subsection>
+
+      <subsection name="Parent Module"
+                  id="UnnecessarySemicolonAfterTypeMemberDeclaration_Parent_Module">
+        <p>
+          <a href="config.html#TreeWalker">TreeWalker</a>
+        </p>
+      </subsection>
+    </section>
+
     <section name="UnnecessarySemicolonInEnumeration">
       <p>Since Checkstyle 8.22</p>
       <subsection name="Description" id="UnnecessarySemicolonInEnumeration_Description">
