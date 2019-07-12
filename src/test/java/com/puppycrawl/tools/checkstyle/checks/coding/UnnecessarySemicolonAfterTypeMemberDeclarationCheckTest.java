@@ -27,7 +27,6 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class UnnecessarySemicolonAfterTypeMemberDeclarationCheckTest
     extends AbstractModuleTestSupport {
@@ -64,23 +63,20 @@ public class UnnecessarySemicolonAfterTypeMemberDeclarationCheckTest
     }
 
     @Test
-    public void testNoPrevSiblingBeforeSemicolon() throws Exception {
-        final DefaultConfiguration checkConfig =
-            createModuleConfig(UnnecessarySemicolonAfterTypeMemberDeclarationCheck.class);
-
-        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
-
-        verify(checkConfig, getNonCompilablePath(
-            "InputUnnecessarySemicolonAfterTypeMemberDeclarationNoPackage.java"),
-            expected);
-    }
-
-    @Test
     public void testTokens() {
         final UnnecessarySemicolonAfterTypeMemberDeclarationCheck check =
             new UnnecessarySemicolonAfterTypeMemberDeclarationCheck();
         final int[] expected = {
-            TokenTypes.SEMI,
+            TokenTypes.CLASS_DEF,
+            TokenTypes.INTERFACE_DEF,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.ANNOTATION_DEF,
+            TokenTypes.VARIABLE_DEF,
+            TokenTypes.STATIC_INIT,
+            TokenTypes.INSTANCE_INIT,
+            TokenTypes.CTOR_DEF,
+            TokenTypes.METHOD_DEF,
+            TokenTypes.ENUM_CONSTANT_DEF,
         };
         Assert.assertArrayEquals("Acceptable required tokens are invalid",
             expected, check.getAcceptableTokens());

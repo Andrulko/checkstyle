@@ -18,10 +18,6 @@
 
   <!-- intentional problem for testing -->
   <suppress checks="PackageDeclarationCheck"
-    files="unnecessarysemicolonaftertypememberdeclaration[\\/]InputUnnecessarySemicolonAfterTypeMemberDeclarationNoPackage\.java"/>
-
-  <!-- intentional problem for testing -->
-  <suppress checks="PackageDeclarationCheck"
     files="InputFinalClassClassWithPrivateCtorWithNestedExtendingClassWithoutPackage\.java"/>
 
   <!-- intentional problem for testing -->

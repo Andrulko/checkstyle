@@ -42,3 +42,10 @@ enum e {
 interface i {
     ; //violation
 };
+enum e1 {}
+enum e2 {;}
+enum e3 {E;}
+enum e4 {E,;}
+@interface an1 {}
+interface i1 {}
+class c {}

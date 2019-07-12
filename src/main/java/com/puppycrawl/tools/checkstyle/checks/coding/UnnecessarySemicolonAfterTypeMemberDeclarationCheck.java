@@ -19,9 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -61,30 +58,6 @@ public final class UnnecessarySemicolonAfterTypeMemberDeclarationCheck extends A
      */
     public static final String MSG_SEMI = "unnecessary.semicolon";
 
-    /**
-     * List of tokens that is used to check if token is a class member.
-     *
-     * @see #isClassMember(DetailAST)
-     */
-    private static final List<Integer> CLASS_MEMBER_TOKENS = Arrays.asList(
-        TokenTypes.STATIC_INIT,
-        TokenTypes.INSTANCE_INIT,
-        TokenTypes.CTOR_DEF,
-        TokenTypes.METHOD_DEF
-    );
-
-    /**
-     * List of tokens that is used to check if token is a nested type.
-     *
-     * @see #isNestedTypeDeclaration(DetailAST)
-     */
-    private static final List<Integer> TYPE_TOKENS = Arrays.asList(
-        TokenTypes.CLASS_DEF,
-        TokenTypes.INTERFACE_DEF,
-        TokenTypes.ENUM_DEF,
-        TokenTypes.ANNOTATION_DEF
-    );
-
     @Override
     public int[] getDefaultTokens() {
         return getRequiredTokens();
@@ -98,61 +71,107 @@ public final class UnnecessarySemicolonAfterTypeMemberDeclarationCheck extends A
     @Override
     public int[] getRequiredTokens() {
         return new int[] {
-            TokenTypes.SEMI,
+            TokenTypes.CLASS_DEF,
+            TokenTypes.INTERFACE_DEF,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.ANNOTATION_DEF,
+            TokenTypes.VARIABLE_DEF,
+            TokenTypes.STATIC_INIT,
+            TokenTypes.INSTANCE_INIT,
+            TokenTypes.CTOR_DEF,
+            TokenTypes.METHOD_DEF,
+            TokenTypes.ENUM_CONSTANT_DEF,
         };
     }
 
     @Override
     public void visitToken(DetailAST ast) {
-        final DetailAST prevSibling = ast.getPreviousSibling();
-        if (prevSibling != null && (isClassMember(prevSibling) || isAloneSemicolon(ast))) {
-            log(ast, MSG_SEMI);
+        switch (ast.getType()) {
+            case TokenTypes.CLASS_DEF:
+            case TokenTypes.INTERFACE_DEF:
+            case TokenTypes.ENUM_DEF:
+            case TokenTypes.ANNOTATION_DEF:
+                checkTypeDefinition(ast);
+                break;
+            case TokenTypes.VARIABLE_DEF:
+                checkVariableDefinition(ast);
+                break;
+            case TokenTypes.ENUM_CONSTANT_DEF:
+                checkEnumConstant(ast);
+                break;
+            default:
+                checkTypeMember(ast);
+                break;
         }
     }
 
     /**
-     * Checks that {@code ast} is class member.
+     * Checks if type member has unnecessary semicolon.
      *
-     * @param ast token to check
-     * @return true if ast is a class member, false otherwise
+     * @param ast type member
      */
-    private static boolean isClassMember(DetailAST ast) {
-        return CLASS_MEMBER_TOKENS.contains(ast.getType())
-            || isFieldDeclaration(ast)
-            || isNestedTypeDeclaration(ast);
+    private void checkTypeMember(DetailAST ast) {
+        if (isSemicolon(ast.getNextSibling())) {
+            log(ast.getNextSibling(), MSG_SEMI);
+        }
     }
 
     /**
-     * Checks that {@code ast} is a standalone semicolon.
+     * Checks if type definition has unnecessary semicolon.
      *
-     * @param ast token to check
-     * @return true if ast is a standalone semicolon, false otherwise
+     * @param ast type definition
      */
-    private static boolean isAloneSemicolon(DetailAST ast) {
-        final int type = ast.getPreviousSibling().getType();
-        return type == TokenTypes.SEMI
-            || type == TokenTypes.LCURLY
-            && !ScopeUtil.isInEnumBlock(ast);
+    private void checkTypeDefinition(DetailAST ast) {
+        if (!ScopeUtil.isOuterMostType(ast) && isSemicolon(ast.getNextSibling())) {
+            log(ast.getNextSibling(), MSG_SEMI);
+        }
+        final DetailAST firstMember =
+            ast.findFirstToken(TokenTypes.OBJBLOCK).getFirstChild().getNextSibling();
+        if (isSemicolon(firstMember) && !ScopeUtil.isInEnumBlock(firstMember)) {
+            log(firstMember, MSG_SEMI);
+        }
     }
 
     /**
-     * Checks that {@code ast} is a nested type.
+     * Checks if variable definition has unnecessary semicolon.
      *
-     * @param ast token to check
-     * @return true if ast is a nested type, false otherwise
+     * @param ast variable definition
      */
-    private static boolean isNestedTypeDeclaration(DetailAST ast) {
-        return TYPE_TOKENS.contains(ast.getType()) && !ScopeUtil.isOuterMostType(ast);
+    private void checkVariableDefinition(DetailAST ast) {
+        if (isFieldDeclaration(ast) && isSemicolon(ast.getNextSibling())) {
+            log(ast.getNextSibling(), MSG_SEMI);
+        }
     }
 
     /**
-     * Checks that {@code ast} is a field declaration.
+     * Checks if enum constant has unnecessary semicolon.
+     *
+     * @param ast enum constant
+     */
+    private void checkEnumConstant(DetailAST ast) {
+        final DetailAST next = ast.getNextSibling();
+        if (isSemicolon(next) && isSemicolon(next.getNextSibling())) {
+            log(next.getNextSibling(), MSG_SEMI);
+        }
+    }
+
+    /**
+     * Checks that {@code ast} is a semicolon.
      *
      * @param ast token to check
-     * @return true if ast is a field declaration, false otherwise
+     * @return true if ast is semicolon, false otherwise
      */
-    private static boolean isFieldDeclaration(DetailAST ast) {
-        return ast.getType() == TokenTypes.VARIABLE_DEF
-            && ast.getLastChild().getType() == TokenTypes.SEMI;
+    private static boolean isSemicolon(DetailAST ast) {
+        return ast.getType() == TokenTypes.SEMI;
+    }
+
+    /**
+     * Checks that {@code variableDef} is a field declaration.
+     *
+     * @param variableDef token to check
+     * @return true if variableDef is a field declaration, false otherwise
+     */
+    private static boolean isFieldDeclaration(DetailAST variableDef) {
+        return isSemicolon(variableDef.getLastChild());
     }
 }
