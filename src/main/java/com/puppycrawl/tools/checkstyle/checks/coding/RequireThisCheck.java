@@ -629,7 +629,6 @@ public class RequireThisCheck extends AbstractCheck {
                 }
             }
             else if (!validateOnlyOverlapping
-                     && prevSibling == null
                      && isAssignToken(ast.getParent().getType())
                      && !isUserDefinedArrangementOfThis(variableDeclarationFrame, ast)
                      && canBeReferencedFromStaticContext(ast)
